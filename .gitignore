@@ -39,6 +39,9 @@ out/
 *.tar.gz
 *.rar
 
+### Database container data ###
+mysql_data/
+
 ### Exclusions ###
 !gradle/wrapper/gradle-wrapper.jar
 !artifacts/app-deadline.jar
