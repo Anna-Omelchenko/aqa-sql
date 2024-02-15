@@ -16,10 +16,15 @@ public class DataHelper {
     private static final String DB_USER = "deadline-app";
     private static final String DB_PASSWORD = "6aDhk037a2e";
 
+    public static final String USER_STATUS_ACTIVE = "active";
+    public static final String USER_STATUS_BLOCKED = "blocked";
+
     private static final String QUERY_VERIFICATION_CODE =
             "SELECT code FROM auth_codes " +
             "WHERE user_id IN (SELECT id FROM users WHERE login = ?)" +
             "ORDER BY created DESC LIMIT 1";
+    private static final String QUERY_USER_GET_STATUS = "SELECT status FROM users WHERE login = ?";
+    private static final String QUERY_USER_SET_STATUS = "UPDATE users SET status = ? WHERE login = ?";
 
     private static final Faker FAKER_EN = new Faker(Locale.ENGLISH);
     private static final QueryRunner QUERY_RUNNER = new QueryRunner();
@@ -46,6 +51,20 @@ public class DataHelper {
         try (Connection conn = DriverManager.getConnection(DB_CONNECTION_STRING, DB_USER, DB_PASSWORD)) {
             return new VerificationCode(
                     QUERY_RUNNER.query(conn, QUERY_VERIFICATION_CODE, new ScalarHandler<>(), loginCredentials.getUsername()));
+        }
+    }
+
+    @SneakyThrows
+    public static String getUserStatusFor(LoginCredentials loginCredentials) {
+        try (Connection conn = DriverManager.getConnection(DB_CONNECTION_STRING, DB_USER, DB_PASSWORD)) {
+            return QUERY_RUNNER.query(conn, QUERY_USER_GET_STATUS, new ScalarHandler<>(), loginCredentials.getUsername());
+        }
+    }
+
+    @SneakyThrows
+    public static void unblockUser(LoginCredentials loginCredentials) {
+        try (Connection conn = DriverManager.getConnection(DB_CONNECTION_STRING, DB_USER, DB_PASSWORD)) {
+            QUERY_RUNNER.update(conn, QUERY_USER_SET_STATUS, USER_STATUS_ACTIVE, loginCredentials.getUsername());
         }
     }
 
