@@ -1,5 +1,6 @@
 package ru.netology.aqa;
 
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.netology.aqa.data.DataHelper;
@@ -35,5 +36,10 @@ public class LoginTest {
             assertEquals(expectedUserStatus, DataHelper.getUserStatusFor(vasyaCreds));
         }
         DataHelper.unblockUser(vasyaCreds);
+    }
+
+    @AfterAll
+    static void deleteTestData() {
+        DataHelper.deleteTestData();
     }
 }

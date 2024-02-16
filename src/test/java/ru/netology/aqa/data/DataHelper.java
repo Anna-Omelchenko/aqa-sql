@@ -26,6 +26,11 @@ public class DataHelper {
     private static final String QUERY_USER_GET_STATUS = "SELECT status FROM users WHERE login = ?";
     private static final String QUERY_USER_SET_STATUS = "UPDATE users SET status = ? WHERE login = ?";
 
+    private static final String QUERY_DELETE_CARD_TRANSACTIONS  = "DELETE FROM card_transactions";
+    private static final String QUERY_DELETE_CARDS              = "DELETE FROM cards";
+    private static final String QUERY_DELETE_AUTH_CODES         = "DELETE FROM auth_codes";
+    private static final String QUERY_DELETE_USERS              = "DELETE FROM users";
+
     private static final Faker FAKER_EN = new Faker(Locale.ENGLISH);
     private static final QueryRunner QUERY_RUNNER = new QueryRunner();
 
@@ -70,5 +75,15 @@ public class DataHelper {
 
     public static String generatePassword() {
         return FAKER_EN.internet().password();
+    }
+
+    @SneakyThrows
+    public static void deleteTestData() {
+        try (Connection conn = DriverManager.getConnection(DB_CONNECTION_STRING, DB_USER, DB_PASSWORD)) {
+            QUERY_RUNNER.update(conn, QUERY_DELETE_CARD_TRANSACTIONS);
+            QUERY_RUNNER.update(conn, QUERY_DELETE_CARDS);
+            QUERY_RUNNER.update(conn, QUERY_DELETE_AUTH_CODES);
+            QUERY_RUNNER.update(conn, QUERY_DELETE_USERS);
+        }
     }
 }
